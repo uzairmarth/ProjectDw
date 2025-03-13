@@ -4,6 +4,8 @@ import numpy as np
 from keras.models import load_model
 from PIL import Image, ImageOps
 import wikipedia
+import pydeck as pdk
+import pandas as pd
 
 # Disable scientific notation for clarity
 np.set_printoptions(suppress=True)
@@ -115,3 +117,10 @@ st.subheader("Learn More About This Species")
 if detected_species:
     st.write(get_species_info(detected_species))
 
+# Create a species map
+species_map = pd.DataFrame({
+    "lat": [23.6345, -3.4653, 35.6895],  # Example latitudes
+    "lon": [102.5528, 102.5041, 139.6917],  # Example longitudes
+    "species": ["Tiger", "Orangutan", "Panda"]
+})
+st.map(species_map)
