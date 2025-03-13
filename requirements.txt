@@ -80,3 +80,4 @@ urllib3==2.2.1
 watchdog==6.0.0
 Werkzeug==3.0.3
 wrapt==1.14.1
+python==3.11
