@@ -1,6 +1,7 @@
-streamlit==1.10.0
-opencv-python-headless
-numpy==1.19.5
-tensorflow==2.4.1
-pillow==8.2.0
-matplotlib==3.4.2
+streamlit==1.43.1
+opencv-python==4.11.0.86
+numpy==1.23.5
+tensorflow==2.12.0
+keras==2.12.0
+pillow==10.3.0
+matplotlib==3.10.1
