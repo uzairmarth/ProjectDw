@@ -1,7 +1,7 @@
-Streamlit: streamlit==1.10.0
-NumPy: numpy==1.21.6
-OpenCV-Python: opencv-python==4.5.5.64
-TensorFlow: tensorflow==2.8.0
-Pillow: pillow==9.0.1
-Keras: keras==2.8.0
-Matplotlib: matplotlib==3.5.1
+streamlit==1.10.0
+numpy==1.21.6
+opencv-python==4.5.5.64
+tensorflow==2.8.0
+pillow==9.0.1
+keras==2.8.0
+matplotlib==3.5.1
