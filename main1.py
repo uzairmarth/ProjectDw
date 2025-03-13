@@ -71,7 +71,7 @@ if upload_option == "Upload Image(s)":
     if uploaded_files:
         for uploaded_file in uploaded_files:
             image = Image.open(uploaded_file)
-            st.image(image, caption=f"Uploaded Image: {uploaded_file.name}", use_column_width=True)
+            st.image(image, caption=f"Uploaded Image: {uploaded_file.name}", use_container_width=True)
             # Preprocess the image
             image = ImageOps.fit(image, (224, 224), Image.Resampling.LANCZOS)
             image_array = np.asarray(image)
@@ -101,7 +101,7 @@ elif upload_option == "WebRTC":
 
 # Display top detected species leaderboard
 top_detections = results_df["Detected Species"].value_counts().head(5)
-st.subheader("Top Detected Species")
+st.subheader("Detected Species")
 st.write(top_detections)
 
 # Save results to CSV
