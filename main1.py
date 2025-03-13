@@ -1,4 +1,5 @@
 import streamlit as st
+from streamlit_webrtc import webrtc_streamer, VideoTransformerBase
 import cv2
 import numpy as np
 from keras.models import load_model
@@ -31,10 +32,33 @@ def get_species_info(species):
         summary = "No additional information available."
     return summary
 
+# Video Transformer class for WebRTC
+class VideoTransformer(VideoTransformerBase):
+    def transform(self, frame):
+        # Process the frame (e.g., apply OpenCV operations)
+        image = frame.to_image()
+        image = ImageOps.fit(image, (224, 224), Image.Resampling.LANCZOS)
+        image_array = np.asarray(image)
+        normalized_image_array = (image_array.astype(np.float32) / 127.5) - 1
+
+        # Load the image into the array
+        data = np.ndarray(shape=(1, 224, 224, 3), dtype=np.float32)
+        data[0] = normalized_image_array
+
+        # Predict using the model
+        prediction = model.predict(data)
+        index = np.argmax(prediction)
+        class_name = class_names[index].strip().split(" ")[1]
+        confidence_score = prediction[0][index]
+
+        # Update the frame with prediction text
+        frame = cv2.putText(frame, f"{class_name} ({confidence_score:.2f}%)", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv2.LINE_AA)
+        return frame
+
 # Initialize Streamlit app
 st.title("Animal Detection Dashboard")
 st.sidebar.header("Wildlife Detection Settings")
-upload_option = st.sidebar.radio("Choose Input Source:", ("Upload Image(s)", "Use Webcam"))
+upload_option = st.sidebar.radio("Choose Input Source:", ("Upload Image(s)", "Use Webcam", "WebRTC"))
 
 # Store results in a DataFrame
 results_df = pd.DataFrame(columns=["Timestamp", "Detected Species", "Confidence"])
@@ -118,9 +142,12 @@ elif upload_option == "Use Webcam":
     ax.legend()
     st.pyplot(fig)
 
+elif upload_option == "WebRTC":
+    webrtc_streamer(key="example", video_transformer_factory=VideoTransformer)
+
 # Display top detected species leaderboard
 top_detections = results_df["Detected Species"].value_counts().head(5)
-st.subheader("Top Detected Species")
+st.subheader(" Detected Species")
 st.write(top_detections)
 
 # Save results to CSV
