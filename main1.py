@@ -6,6 +6,7 @@ from PIL import Image, ImageOps
 import wikipedia
 import pydeck as pdk
 import pandas as pd
+import matplotlib.pyplot as plt
 
 # Disable scientific notation for clarity
 np.set_printoptions(suppress=True)
@@ -35,6 +36,7 @@ def get_species_info(species):
 # Option to upload an image
 uploaded_file = st.file_uploader("Choose an image...", type="jpg")
 detected_species = None
+confidence_scores = []
 
 if uploaded_file is not None:
     image = Image.open(uploaded_file)
@@ -56,6 +58,7 @@ if uploaded_file is not None:
     index = np.argmax(prediction)
     class_name = class_names[index].strip().split(" ")[1]
     confidence_score = prediction[0][index]
+    confidence_scores.append(confidence_score)
     detected_species = class_name
 
     # Get animal information
@@ -74,6 +77,8 @@ if st.button('Use Camera') and cv2.VideoCapture(0).isOpened():
     stframe = st.empty()
     detection_placeholder = st.empty()
     info_placeholder = st.empty()
+    time_series = []
+    confidence_scores = []
 
     while cap.isOpened():
         ret, frame = cap.read()
@@ -95,6 +100,7 @@ if st.button('Use Camera') and cv2.VideoCapture(0).isOpened():
         index = np.argmax(prediction)
         class_name = class_names[index].strip().split(" ")[1]
         confidence_score = prediction[0][index]
+        confidence_scores.append(confidence_score)
         detected_species = class_name
 
         # Get animal information
@@ -108,7 +114,20 @@ if st.button('Use Camera') and cv2.VideoCapture(0).isOpened():
         detection_placeholder.text(f"Class: {class_name}  Confidence: {confidence_score:.2f}")
         info_placeholder.text(f"Information: {info}")
 
+        # Update time series and confidence scores
+        time_series.append(len(time_series))
+
     cap.release()
+
+    # Plot the real-time confidence scores
+    st.subheader("Real-Time Confidence Score")
+    fig, ax = plt.subplots()
+    ax.plot(time_series, confidence_scores, label="Confidence %")
+    ax.set_xlabel("Time")
+    ax.set_ylabel("Confidence")
+    ax.legend()
+    st.pyplot(fig)
+
 else:
     st.write("Camera is not available or not accessible.")
 
