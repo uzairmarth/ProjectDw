@@ -55,9 +55,6 @@ while cap.isOpened():
     else:
         info = "No information available."
 
-    # Age estimation placeholder
-    estimated_age = "Estimated age: ~10 years (placeholder)"
-
     # Update the frame and detection information
     stframe.image(frame, channels="BGR")
     detection_placeholder.text(f"Class: {class_name}  Confidence: {confidence_score:.2f}")
