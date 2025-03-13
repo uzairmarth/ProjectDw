@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 from keras.models import load_model
 from PIL import Image, ImageOps
+import wikipedia
 
 # Disable scientific notation for clarity
 np.set_printoptions(suppress=True)
@@ -21,8 +22,18 @@ animal_info = {
 # Streamlit app
 st.title("Animal Detection Dashboard")
 
+# Function to get species info from Wikipedia
+def get_species_info(species):
+    try:
+        summary = wikipedia.summary(species, sentences=2)
+    except:
+        summary = "No information available."
+    return summary
+
 # Option to upload an image
 uploaded_file = st.file_uploader("Choose an image...", type="jpg")
+detected_species = None
+
 if uploaded_file is not None:
     image = Image.open(uploaded_file)
     st.image(image, caption='Uploaded Image.', use_column_width=True)
@@ -43,6 +54,7 @@ if uploaded_file is not None:
     index = np.argmax(prediction)
     class_name = class_names[index].strip().split(" ")[1]
     confidence_score = prediction[0][index]
+    detected_species = class_name
 
     # Get animal information
     if class_name in animal_info:
@@ -81,6 +93,7 @@ if st.button('Use Camera') and cv2.VideoCapture(0).isOpened():
         index = np.argmax(prediction)
         class_name = class_names[index].strip().split(" ")[1]
         confidence_score = prediction[0][index]
+        detected_species = class_name
 
         # Get animal information
         if class_name in animal_info:
@@ -96,4 +109,9 @@ if st.button('Use Camera') and cv2.VideoCapture(0).isOpened():
     cap.release()
 else:
     st.write("Camera is not available or not accessible.")
+
+# Chatbot Feature: Learn More About the Detected Species
+st.subheader("Learn More About This Species")
+if detected_species:
+    st.write(get_species_info(detected_species))
 
