@@ -22,7 +22,7 @@ animal_info = {
 st.title("Animal Detection Dashboard")
 
 # Define the video capture object
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(0)  # Update this index based on the available camera
 
 stframe = st.empty()
 detection_placeholder = st.empty()
@@ -54,6 +54,9 @@ while cap.isOpened():
         info = animal_info[class_name]
     else:
         info = "No information available."
+
+    # Age estimation placeholder
+    estimated_age = "Estimated age: ~10 years (placeholder)"
 
     # Update the frame and detection information
     stframe.image(frame, channels="BGR")
