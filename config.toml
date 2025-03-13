@@ -1,0 +1,5 @@
+[server]
+headless = true
+
+[virtualenv]
+python_version = "3.11.0"
