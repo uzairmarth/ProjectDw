@@ -1,7 +1,7 @@
 streamlit
 opencv-python
 numpy
-keras
+tensorflow==2.4.1
+keras==2.4.3
 pillow
 matplotlib
-tensorflow
